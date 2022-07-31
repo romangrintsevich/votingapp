@@ -82,4 +82,3 @@ pipeline {
         }
     }
 }
-if [ \$(docker compose ps) ]; then docker compose down); fi
