@@ -1,0 +1,84 @@
+#!groovy
+// Run docker build
+properties([disableConcurrentBuilds()])
+
+pipeline {
+    agent { 
+        label 'built-in'
+        }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("Prepare sandbox(compose down)") {
+			      steps {
+              echo " ============== start docker compose down =================="
+              sh '''
+                ssh root@sandbox \'cd /app/votingapp/sandbox && docker compose down\'
+              '''              
+			      }
+        }
+        stage("Prepare sandbox(rm file in /app)") {
+			      steps {
+              echo " ============== start deleting files in /app =================="           
+				      sh 'ssh root@sandbox \'cd /app && rm -rf votingapp/\'' /* clean up our workspace */
+            
+			      }
+        }
+        stage("pull repository to sandbox") {
+            steps {
+                echo " ============== start pulling repository =================="
+                sh 'ssh root@sandbox \'cd /app && git clone https://github.com/romangrintsevich/votingapp.git\''
+
+            }
+        }
+        stage("delete docker images") {
+            steps {
+                echo " ============== start deleting docker images =================="
+                sh '''
+                ssh root@sandbox \' if [ \$(docker ps -qa) ]; then docker stop \$(docker container ls -qa); fi \\
+                && if [ \$(docker ps -qa) ]; then docker rm \$(docker container ls -qa); fi \\
+                && if [ \$(docker image ls -qa) ]; then docker image rm \$(docker image ls -qa); fi\'
+                '''
+            }
+        }
+        stage("run proxy") {
+            steps {
+                echo " ============== start running proxy =================="
+                sh '''
+                ssh root@sandbox \'cd /app/votingapp/sandbox && docker compose up -d proxy\'
+                '''
+                
+            }
+        }
+        stage("run redis and db") {
+            steps {
+                echo " ============== start running redis and db =================="
+                sh '''
+                ssh root@sandbox \'cd /app/votingapp/sandbox && docker compose up -d redis db\'
+                '''
+                
+            }
+        }
+        stage("run worker, vote, result") {
+            steps {
+                echo " ============== start running worker, vote, result =================="
+                sh '''
+                ssh root@sandbox \'cd /app/votingapp/sandbox && docker compose up -d worker vote result\'
+                '''
+                
+            }
+        }
+        stage("Print images") {
+            steps {
+                echo " ============== start printing images =================="
+                sh '''
+                ssh root@sandbox \'cd /app/votingapp/sandbox && docker compose ps\'
+                '''
+                
+            }
+        }
+    }
+}
