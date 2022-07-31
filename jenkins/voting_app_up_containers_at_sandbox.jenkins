@@ -12,14 +12,14 @@ pipeline {
         timestamps()
     }
     stages {
-        /*stage("Prepare sandbox(compose down)") {
+        stage("Prepare sandbox(compose down)") {
 			      steps {
               echo " ============== start docker compose down =================="
               sh '''
                 ssh root@sandbox \'cd /app/votingapp/sandbox && docker compose down\'
               '''              
 			      }
-        }*/
+        }
         stage("Prepare sandbox(rm file in /app)") {
 			      steps {
               echo " ============== start deleting files in /app =================="           
