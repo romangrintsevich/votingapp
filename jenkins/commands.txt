@@ -1,0 +1,27 @@
+
+# sandbox is an ubuntu server, on which we will run the workshop installaition. 
+# There are two ports 8080 and 8081, throgh which we can have access to vote and result  
+
+# sandbox 
+ssh grintsevich@192.168.0.108 # Ip address can be changed
+
+# install docker 
+# Create dir /app
+# Clone repository from git to sandbox
+# docker compose up 
+
+ 
+# jenkins
+ssh grintsevich@192.168.0.109 # Ip address can be changed
+
+# install java
+# install jenkins 
+# install docker 
+# create .ssh/ in home dir for user jenkins.    ssh-keygen
+# add id_rsa.pub to .ssh/authorized_keys on the server you want to configure through jenkins. Connect to this server. Connect as root. vim .ssh/authorized_keys
+
+
+
+
+
+docker exec -it jenkins bin/bash
