@@ -24,4 +24,5 @@ ssh grintsevich@192.168.0.109 # Ip address can be changed
 
 
 
+
 docker exec -it jenkins bin/bash
