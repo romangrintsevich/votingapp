@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 services:
 
@@ -8,8 +8,8 @@ services:
     networks:
       - internal
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      - '8080:8080'
+      - '8081:8081'
 
   vote:
     image: rgrintsevich/vote:latest
@@ -31,7 +31,7 @@ services:
     volumes:
       - ./result:/app
     ports:
-      - "5858:5858"
+      - '5858:5858'
     networks:
       - internal
 
@@ -45,17 +45,17 @@ services:
 
   redis:
     image: redis:5.0-alpine3.10
-    ports: ["6379"]
+    ports: ['6379']
     networks:
       - internal
 
   db:
     image: postgres:9.6-alpine
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
     volumes:
-      - "db-data:/var/lib/postgresql/data"
+      - 'db-data:/var/lib/postgresql/data'
     networks:
       - internal
 
